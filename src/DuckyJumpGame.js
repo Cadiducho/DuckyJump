@@ -1,5 +1,5 @@
 import {DuckyScene} from "./DuckyScene.js";
-import {DuckyMap} from "./DuckyMap.js";
+import {DuckyDuck} from "./DuckyDuck.js";
 
 /**
  * Clase principal del juego que creará la escena a renderizar y se enlazará al hmtl
@@ -9,7 +9,12 @@ export class DuckyJumpGame {
     constructor() {
         this.scene = new DuckyScene("#WebGL-output");
 
-        this.gameMap = new DuckyMap(this.scene.world);
+        this.initializeGame();
+    }
+
+    initializeGame() {
+        this.player = new DuckyDuck(this.scene);
+        this.scene.world.add(this.player);
     }
 
     update () {
