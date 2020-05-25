@@ -1,25 +1,26 @@
+import {xCamara, yCamara, zCamara, spawnPos} from "./settings.js";
 
 export class DuckyCamera extends THREE.PerspectiveCamera {
 
     constructor(renderer) {
-        super(45, window.innerWidth / window.innerHeight, 0.1, 1000);
-
+        super(60, window.innerWidth / window.innerHeight, 0.1, 1000);
         this.renderer = renderer;
-        //this.position.set(-1, 2.8, -2.9);
-        this.position.set (20, 10, 20);
-        this.look = new THREE.Vector3 (0,0,0);
-        this.lookAt(this.look);
 
-        // Para el control de cámara usamos una clase que ya tiene implementado los movimientos de órbita
-        this.cameraControl = new THREE.TrackballControls (this, this.renderer.domElement);
-        // Se configuran las velocidades de los movimientos
-        this.cameraControl.rotateSpeed = 5;
-        this.cameraControl.zoomSpeed = -2;
-        this.cameraControl.panSpeed = 0.5;
-        this.cameraControl.target = this.look;
+        this.position.set(spawnPos.x + xCamara, yCamara, spawnPos.z + zCamara); // algo isométrico es
+        this.lookAt(spawnPos.x, spawnPos.y, spawnPos.z); // Se crea la cámara mirando a dónde aparecerá el pato
+    }
+
+    followDuck(duckPosition) {
+        //console.log("[Debug] Moviendo cámara de " + JSON.stringify(this.position));
+        let newPosition = new THREE.Vector3(duckPosition.x + xCamara, yCamara, duckPosition.z + zCamara);
+        new TWEEN.Tween(this.position)
+            .to(newPosition, 600) // voy siguiendo la posicion del pato
+            .easing(TWEEN.Easing.Sinusoidal.InOut)
+            .start();
+        //console.log("[Debug] look at a " + JSON.stringify(duckPosition));
     }
 
     update() {
-        this.cameraControl.update();
+        
     }
 }
