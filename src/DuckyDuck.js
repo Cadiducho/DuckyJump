@@ -2,6 +2,8 @@ import {alturaSuelo, spawnPos, alturaJugador} from "./settings.js";
 
 export class DuckyDuck extends THREE.Object3D {
 
+    isMoving = false;
+
     constructor(scene) {
         super();
 
@@ -15,6 +17,8 @@ export class DuckyDuck extends THREE.Object3D {
     }
 
     onMove(type) {
+        if (this.isMoving) return; // Si ya se está moviendo, no comenzar otras animaciones
+
         let newPosition = new THREE.Vector3(this.position.x, (alturaSuelo + alturaJugador), this.position.z);
         //console.log("[Debug] Anterior: " + JSON.stringify(newPosition));
         switch (type) {
@@ -30,24 +34,25 @@ export class DuckyDuck extends THREE.Object3D {
             case MovementType.DERECHA:
                 newPosition.setZ(this.position.z + 1);
                 break;
-            case MovementType.RESET:
-                this.resetPosition();
-                break;
         }
 
         new TWEEN.Tween(this.position)
-            .to(newPosition, 600)
+            .onStart(() => this.isMoving = true)
+            .onComplete(() => this.isMoving = false)
+            .to(newPosition, 400)
             .easing(TWEEN.Easing.Quintic.InOut)
             .start();
 
         this.scene.camera.followDuck(newPosition);
-
+        this.isMoving = false;
        // this.position.copy(newPosition);
         //console.log("[Debug] Moviendo a " + JSON.stringify(newPosition));
     }
 
     resetPosition() {
         this.position.set(spawnPos.x, spawnPos.y, spawnPos.z);
+        this.scene.camera.followDuck(this.position);
+        this.isMoving = false;
     }
 }
 
@@ -56,5 +61,4 @@ export const MovementType = {
     DETRAS: 2,
     IZQUIERDA: 3,
     DERECHA: 4,
-    RESET: 0
 }
