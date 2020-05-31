@@ -56,6 +56,7 @@ export class DuckyScene extends THREE.Scene {
     update () {
         this.renderer.render(this, this.camera);
         this.camera.update();
+        this.world.update();
     }
 
 }

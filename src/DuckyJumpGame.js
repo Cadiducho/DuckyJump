@@ -15,7 +15,7 @@ export class DuckyJumpGame {
 
     initializeGame() {
         this.player = new DuckyDuck(this.scene);
-        this.scene.world.add(this.player);
+        this.scene.world.addPlayer(this.player);
     }
 
     update () {
