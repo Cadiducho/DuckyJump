@@ -9,6 +9,7 @@ export default class BiomaBase extends THREE.Object3D {
      */
     constructor(minRows, maxRow) {
         super();
+        this.suelo = new THREE.Object3D();
         this.rows = Math.floor(Math.random() * maxRow) + minRows;
     }
 
@@ -22,7 +23,7 @@ export default class BiomaBase extends THREE.Object3D {
      */
     generarBioma(inicio) {
         //console.log("Inicio: " + inicio);
-
+        this.inicio = inicio;
         let actualRow = inicio;
         for (let i = 0; i < this.rows; ++i) {
             let geometryGround = new THREE.BoxGeometry(longitudFila, alturaSuelo, anchuraFila);
@@ -34,10 +35,11 @@ export default class BiomaBase extends THREE.Object3D {
             ground.position.y = alturaSuelo;
             ground.position.x = actualRow;
 
-            this.add(ground);
+            this.suelo.add(ground);
 
             actualRow++;
         }
+        this.add(this.suelo);
     }
 
     update(player) {
