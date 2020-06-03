@@ -15,6 +15,20 @@
                 margin: 0;
                 overflow: hidden;
             }
+
+            .debugInfo {
+                position: absolute;
+                top: 10px;
+                text-align: left;
+                z-index: 100;
+                display:block;
+            }
+            #info-bioma {
+                top: 10px;
+            }
+            #info-posicion {
+                top: 30px;
+            }
         </style>
     </head>
     <body>
@@ -22,5 +36,7 @@
         <!-- Div which will hold the Output -->
         <div id="WebGL-output">
         </div>
+        <div class="debugInfo" id="info-bioma">Bioma: inicio</div>
+        <div class="debugInfo" id="info-posicion">Posicion: {x: 1, z: 0}</div>
     </body>
 </html>

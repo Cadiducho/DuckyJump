@@ -7,8 +7,9 @@ export default class BiomaBase extends THREE.Object3D {
      * @param minRows Filas mínimas
      * @param maxRow Filas máximas
      */
-    constructor(minRows, maxRow) {
+    constructor(minRows, maxRow, world) {
         super();
+        this.world = world;
         this.suelo = new THREE.Object3D();
         this.rows = Math.floor(Math.random() * maxRow) + minRows;
     }
@@ -20,8 +21,9 @@ export default class BiomaBase extends THREE.Object3D {
     /**
      * Generar bioma a partir de la fila indicada
      * @param inicio la fila
+     * @param tipo Tipo del bioma. Puede ser cesped, agua...
      */
-    generarBioma(inicio) {
+    generarBioma(inicio, tipo = 'no definido') {
         //console.log("Inicio: " + inicio);
         this.inicio = inicio;
         let actualRow = inicio;
@@ -34,6 +36,11 @@ export default class BiomaBase extends THREE.Object3D {
 
             ground.position.y = alturaSuelo;
             ground.position.x = actualRow;
+
+            this.world.setFila(actualRow, {
+                type: tipo,
+                mesh: ground
+            });
 
             this.suelo.add(ground);
 

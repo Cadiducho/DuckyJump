@@ -5,8 +5,8 @@ export default class Agua extends BiomaBase {
 
     color = 0xa8ede5;
 
-    constructor() {
-        super(1, 4);
+    constructor(world) {
+        super(1, 4, world);
     }
 
     generarBioma(inicio) {
@@ -22,6 +22,11 @@ export default class Agua extends BiomaBase {
 
             ground.position.y = alturaSuelo - 0.15;
             ground.position.x = actualRow;
+
+            this.world.setFila(actualRow, {
+                type: 'agua',
+                mesh: ground
+            });
 
             this.add(ground);
 

@@ -22,14 +22,14 @@ export class DuckyWorld extends THREE.Object3D {
         this.jugador = player;
         this.add(player);
     }
-/*
+
     getFila(i) {
         return this.worldMatrix[i];
     }
 
     setFila(i, objeto) {
         this.worldMatrix[i] = objeto;
-    }*/
+    }
 
     biomasAgua = [];
     biomasRoad = [];
@@ -38,13 +38,13 @@ export class DuckyWorld extends THREE.Object3D {
         let filasCreadas = 0;
 
         // El bioma spawn, inicio sobre cemento
-        let spawn = new Spawn();
+        let spawn = new Spawn(this);
         spawn.generarBioma(filasCreadas);
         this.add(spawn);
         filasCreadas += spawn.getRows();
 
         // Unas de cesped siempre al principio
-        let spawnFaseCesped = new Cesped();
+        let spawnFaseCesped = new Cesped(this);
         spawnFaseCesped.generarBioma(filasCreadas);
         this.add(spawnFaseCesped);
         filasCreadas += spawnFaseCesped.getRows();
@@ -54,14 +54,14 @@ export class DuckyWorld extends THREE.Object3D {
             let r = Math.random();
             let bioma;
             if (r < 0.3) {
-                bioma = new Bosque();
+                bioma = new Bosque(this);
             } else if (r < 0.5) {
-                bioma = new Cesped();
+                bioma = new Cesped(this);
             } else if (r < 0.8) {
-                bioma = new Agua();
+                bioma = new Agua(this);
                 this.biomasAgua.push(bioma);
             } else {
-                bioma = new Road();
+                bioma = new Road(this);
                 this.biomasRoad.push(bioma);
             }
 

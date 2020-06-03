@@ -45,8 +45,14 @@ export class DuckyDuck extends THREE.Object3D {
 
         this.scene.camera.followDuck(newPosition);
         this.isMoving = false;
+        this.finishMove(newPosition);
        // this.position.copy(newPosition);
         //console.log("[Debug] Moviendo a " + JSON.stringify(newPosition));
+    }
+
+    finishMove(newPosition) {
+        document.getElementById("info-bioma").innerText = "Bioma: " + this.scene.world.getFila(newPosition.x).type;
+        document.getElementById("info-posicion").innerText = "Posicion: {x: " + newPosition.x + ", z: " + newPosition.z +"}";
     }
 
     resetPosition() {

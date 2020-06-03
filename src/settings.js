@@ -15,3 +15,6 @@ export const spawnPos = {
     y: alturaSuelo + alturaJugador,
     z: 0
 }
+
+export const probabilidadArbolesFilaConArboles  = 0.7;
+export const probabilidadCantidadArbolesEnFila  = 0.2;
