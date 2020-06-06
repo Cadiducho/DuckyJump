@@ -9,11 +9,13 @@ export class DuckyDuck extends THREE.Object3D {
 
         this.scene = scene;
 
-        let geometry = new THREE.BoxGeometry(1, alturaJugador, 1);
+        /*let geometry = new THREE.BoxGeometry(1, alturaJugador, 1);
         let material = new THREE.MeshBasicMaterial( {color: 0xF9FF33} );
-        let cube = new THREE.Mesh( geometry, material );
+        let cube = new THREE.Mesh( geometry, material );*/
+
+        let duck = this.createDuck();
         this.resetPosition();
-        this.add(cube);
+        this.add(duck);
     }
 
     onMove(type) {
@@ -46,7 +48,8 @@ export class DuckyDuck extends THREE.Object3D {
         this.scene.camera.followDuck(newPosition);
         this.isMoving = false;
         this.finishMove(newPosition);
-       // this.position.copy(newPosition);
+        this.ScoreResult(newPosition);
+        //this.position.copy(newPosition);
         //console.log("[Debug] Moviendo a " + JSON.stringify(newPosition));
     }
 
@@ -59,6 +62,49 @@ export class DuckyDuck extends THREE.Object3D {
         this.position.set(spawnPos.x, spawnPos.y, spawnPos.z);
         this.scene.camera.followDuck(this.position);
         this.isMoving = false;
+    }
+
+    createDuck (){
+        let duck = new THREE.Object3D();
+        duck.cabeza = new THREE.Mesh(
+            new THREE.BoxGeometry(1,1,1),
+            new THREE.MeshBasicMaterial( {color: 0xF9FF33} )
+        );
+
+        duck.cuerpo = new THREE.Mesh(
+            new THREE.BoxGeometry(1,1,1),
+            new THREE.MeshBasicMaterial({color: 0xF9FF33})
+        );
+
+        duck.pico = new THREE.Mesh(
+            new THREE.ConeGeometry(0.2,0.4,0.6),
+            new THREE.MeshBasicMaterial({color: 0xFF8000})
+        );
+
+        duck.aleta_izda = new THREE.Mesh(
+            new THREE.BoxGeometry(0.8,0.2,0.6),
+            new THREE.MeshBasicMaterial({color: 0xFF8000})
+        );
+
+        duck.aleta_drch = new THREE.Mesh(
+            new THREE.BoxGeometry(0.8,0.2,0.6),
+            new THREE.MeshBasicMaterial({color: 0xFF8000})
+        );        
+        
+        duck.cabeza.position.set(0,1.2,0);
+        duck.cuerpo.position.set(-0.4,0.2,0);
+        duck.pico.rotateZ(THREE.Math.degToRad(-90));
+        duck.pico.position.set(0.7,1.2,0);
+        duck.aleta_izda.position.set(0,-0.4,0.4);
+        duck.aleta_drch.position.set(0,-0.4,-0.4);
+
+        duck.add(duck.cabeza);
+        duck.add(duck.cuerpo);
+        duck.add(duck.pico);
+        duck.add(duck.aleta_drch);
+        duck.add(duck.aleta_izda);
+
+        return duck;
     }
 }
 
