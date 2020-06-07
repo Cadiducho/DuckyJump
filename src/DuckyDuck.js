@@ -14,7 +14,7 @@ export class DuckyDuck extends THREE.Object3D {
         let cube = new THREE.Mesh( geometry, material );*/
         this.puntuacion = 1;
         this.multiplicidad = 1;
-        this.cont_filas = 0;
+        this.fila_max = 0;
 
         let duck = this.createDuck();
         this.resetPosition();
@@ -51,7 +51,7 @@ export class DuckyDuck extends THREE.Object3D {
         this.scene.camera.followDuck(newPosition);
         this.isMoving = false;
         this.finishMove(newPosition);
-        this.ScoreResult(type);
+        this.ScoreResult(type, newPosition);
         //this.position.copy(newPosition);
         //console.log("[Debug] Moviendo a " + JSON.stringify(newPosition));
     }
@@ -67,15 +67,14 @@ export class DuckyDuck extends THREE.Object3D {
         this.isMoving = false;
     }
 
-    ScoreResult(type){
+    ScoreResult(type, newPosition){
         if(type == MovementType.ADELANTE){
-            this.cont_filas = this.cont_filas + 1;
-            if(this.cont_filas>this.puntuacion){
+            if(this.fila_max < newPosition.x){
+                this.fila_max = newPosition.x;
                 this.puntuacion = this.puntuacion + (1*this.multiplicidad);
-            } 
-        } else if (type == MovementType.DETRAS){
-            this.cont_filas = this.cont_filas - 1;
-        }
+            }
+        } 
+
         document.getElementById("info-puntuacion").innerText = "Puntuacion: " + this.puntuacion;
         document.getElementById("info-multiplicidad").innerText = "Multiplicidad: {x" + this.multiplicidad + "}";
     }
