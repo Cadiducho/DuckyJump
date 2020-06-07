@@ -9,6 +9,7 @@
         <script type="text/javascript" src="../libs/dat.gui.js"></script>
         <script type="text/javascript" src="../libs/TrackballControls.js"></script>
         <script type="text/javascript" src="../libs/Tween.js"></script>
+        <script type="text/javascript" src="../libs/ThreeBSP.js"></script>
         <script type="module" src="DuckyJumpGame.js"></script>
         <style>
             body{
@@ -29,14 +30,29 @@
             #info-posicion {
                 top: 30px;
             }
+
+            .scoreInfo {
+                position: absolute;
+                top: 10px;
+                text-align: left;
+                z-index: 100;
+                display:block;
+            }
+            #info-puntuacion {
+                top: 50px;
+            }
+            #info-multiplicidad {
+                top: 70px;
+            }
         </style>
     </head>
     <body>
-
         <!-- Div which will hold the Output -->
         <div id="WebGL-output">
         </div>
         <div class="debugInfo" id="info-bioma">Bioma: inicio</div>
         <div class="debugInfo" id="info-posicion">Posicion: {x: 1, z: 0}</div>
+        <div class="scoreInfo" id="info-puntuacion">Puntuacion: 0</div>
+        <div class="scoreInfo" id="info-multiplicidad">Multiplicidad: x1</div>
     </body>
 </html>
