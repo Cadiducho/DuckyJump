@@ -14,10 +14,16 @@ export class DuckyJumpGame {
     }
 
     initializeGame() {
+        this.tiempoJugado = 0;
         this.player = new DuckyDuck(this.scene);
         this.scene.world.addPlayer(this.player);
+
+        setInterval(() => this.tick(), 1000);
     }
 
+    /**
+     * Update del navegador
+     */
     update () {
         // Literalmente le decimos al navegador: "La próxima vez que haya que refrescar la pantalla, llama al método que te indico".
         // Si no existiera esta línea,  update()  se ejecutaría solo la primera vez.
@@ -28,6 +34,14 @@ export class DuckyJumpGame {
         //--------
         TWEEN.update();
         this.scene.update();
+    }
+
+    /**
+     * Método que se ejecuta cada segundo
+     */
+    tick() {
+        this.tiempoJugado++;
+        this.player.tick();
     }
 }
 

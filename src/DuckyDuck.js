@@ -1,4 +1,5 @@
 import {alturaSuelo, spawnPos, alturaJugador} from "./settings.js";
+import {Bonificacion} from "./Bonificacion.js";
 
 export class DuckyDuck extends THREE.Object3D {
 
@@ -9,12 +10,10 @@ export class DuckyDuck extends THREE.Object3D {
 
         this.scene = scene;
 
-        /*let geometry = new THREE.BoxGeometry(1, alturaJugador, 1);
-        let material = new THREE.MeshBasicMaterial( {color: 0xF9FF33} );
-        let cube = new THREE.Mesh( geometry, material );*/
         this.puntuacion = 1;
         this.multiplicidad = 1;
         this.fila_max = 0;
+        this.bonificacion = Bonificacion.NINGUNA;
 
         let duck = this.createDuck();
         this.resetPosition();
@@ -59,6 +58,13 @@ export class DuckyDuck extends THREE.Object3D {
     finishMove(newPosition) {
         document.getElementById("info-bioma").innerText = "Bioma: " + this.scene.world.getFila(newPosition.x).type;
         document.getElementById("info-posicion").innerText = "Posicion: {x: " + newPosition.x + ", z: " + newPosition.z +"}";
+/*
+        if (colision) {
+            switch () {
+                this.bonificacion = Bonificacion.VELOCIDAD;
+            }
+            this.bonificacion.aplicar(this);
+        }*/
     }
 
     resetPosition() {
@@ -68,7 +74,7 @@ export class DuckyDuck extends THREE.Object3D {
     }
 
     ScoreResult(type, newPosition){
-        if(type == MovementType.ADELANTE){
+        if(type === MovementType.ADELANTE){
             if(this.fila_max < newPosition.x){
                 this.fila_max = newPosition.x;
                 this.puntuacion = this.puntuacion + (1*this.multiplicidad);
@@ -120,6 +126,17 @@ export class DuckyDuck extends THREE.Object3D {
         duck.add(duck.aleta_izda);
 
         return duck;
+    }
+
+    tick() {
+        if (this.bonificacion.tiempo > 0) {
+            this.bonificacion.tiempo--;
+        }
+
+        if (this.bonificacion.tiempo < 0) {
+            this.bonificacion.quitar(this);
+            this.bonificacion = Bonificacion.NINGUNA;
+        }
     }
 }
 
