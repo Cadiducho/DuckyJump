@@ -6,7 +6,7 @@ export const yCamara = 7;
 export const zCamara = 2.5;
 
 export const primeraFila = 1;
-export const filasMaximas = 100;
+export const filasMaximas = 45;
 export const anchuraFila = 15;
 export const longitudFila = 1
 
@@ -16,5 +16,5 @@ export const spawnPos = {
     z: 0
 }
 
-export const probabilidadArbolesFilaConArboles  = 0.7;
+export const probabilidadArbolesFilaConArboles  = 0.6;
 export const probabilidadCantidadArbolesEnFila  = 0.2;

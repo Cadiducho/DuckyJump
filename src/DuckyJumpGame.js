@@ -8,7 +8,7 @@ import {MovementType} from "./DuckyDuck.js";
 export class DuckyJumpGame {
 
     constructor() {
-        this.scene = new DuckyScene("#WebGL-output");
+        this.scene = new DuckyScene(this, "#WebGL-output");
 
         this.initializeGame();
     }

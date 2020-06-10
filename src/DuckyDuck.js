@@ -47,7 +47,6 @@ export class DuckyDuck extends THREE.Object3D {
             .easing(TWEEN.Easing.Quintic.InOut)
             .start();
 
-        this.scene.camera.followDuck(newPosition);
         this.isMoving = false;
         this.finishMove(newPosition);
         this.ScoreResult(type, newPosition);
@@ -69,7 +68,6 @@ export class DuckyDuck extends THREE.Object3D {
 
     resetPosition() {
         this.position.set(spawnPos.x, spawnPos.y, spawnPos.z);
-        this.scene.camera.followDuck(this.position);
         this.isMoving = false;
         this.fila_max = 0; 
         this.puntuacion = 0;

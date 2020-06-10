@@ -4,14 +4,15 @@ import {DuckyCamera} from "./DuckyCamera.js";
 
 export class DuckyScene extends THREE.Scene {
 
-    constructor (myCanvas) {
+    constructor (game, myCanvas) {
         super();
 
+        this.game = game;
         this.renderer = this.createRenderer(myCanvas);
 
         // Se crea el mundo donde luego añadir los objetos del mapa y una luz ambiental
-        this.world = new DuckyWorld();
-        this.camera = new DuckyCamera(this.renderer);
+        this.world = new DuckyWorld(this);
+        this.camera = new DuckyCamera(this, this.renderer);
 
         this.add(this.camera)
         this.add(this.world);
