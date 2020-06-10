@@ -10,7 +10,7 @@ export class DuckyDuck extends THREE.Object3D {
 
         this.scene = scene;
 
-        this.puntuacion = 1;
+        this.puntuacion = 0;
         this.multiplicidad = 1;
         this.fila_max = 0;
         this.bonificacion = Bonificacion.NINGUNA;
@@ -71,6 +71,10 @@ export class DuckyDuck extends THREE.Object3D {
         this.position.set(spawnPos.x, spawnPos.y, spawnPos.z);
         this.scene.camera.followDuck(this.position);
         this.isMoving = false;
+        this.fila_max = 0; 
+        this.puntuacion = 0;
+        this.multiplicidad = 1;
+
     }
 
     ScoreResult(type, newPosition){
@@ -80,7 +84,6 @@ export class DuckyDuck extends THREE.Object3D {
                 this.puntuacion = this.puntuacion + (1*this.multiplicidad);
             }
         } 
-
         document.getElementById("info-puntuacion").innerText = "Puntuacion: " + this.puntuacion;
         document.getElementById("info-multiplicidad").innerText = "Multiplicidad: {x" + this.multiplicidad + "}";
     }
@@ -125,6 +128,7 @@ export class DuckyDuck extends THREE.Object3D {
         duck.add(duck.aleta_drch);
         duck.add(duck.aleta_izda);
 
+        duck.scale.set(0.5,0.5,0.5);
         return duck;
     }
 
