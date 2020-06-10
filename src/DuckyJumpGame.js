@@ -70,7 +70,7 @@ function onDocumentKeyDown(event) {
     } else if (keyCode === 68 || keyCode === 39) { // A o ->
         game.player.onMove(MovementType.DERECHA);
     } else if (keyCode === 32) { // Espacio
-        game.player.resetPosition();
+        game.player.morir();
     }
 }
 

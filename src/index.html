@@ -44,6 +44,17 @@
             #info-multiplicidad {
                 top: 70px;
             }
+
+            .infoMuerte {
+                position: absolute;
+                top: 50px;
+                margin-left: 19em;
+                text-align: center;
+                z-index: 100;
+                display: block;
+                font-size: 40px;
+                color:red;
+            }
         </style>
     </head>
     <body>
@@ -54,5 +65,6 @@
         <div class="debugInfo" id="info-posicion">Posicion: {x: 1, z: 0}</div>
         <div class="scoreInfo" id="info-puntuacion">Puntuacion: 0</div>
         <div class="scoreInfo" id="info-multiplicidad">Multiplicidad: x1</div>
+        <h2 class="infoMuerte" id="info-muerte"></h2>
     </body>
 </html>

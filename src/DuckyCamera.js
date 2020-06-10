@@ -17,6 +17,8 @@ export class DuckyCamera extends THREE.PerspectiveCamera {
     }
 
     adelantarCamara() {
+        if (this.scene.world.jugador.muerto) return;
+
         let duckPosition = this.scene.world.jugador.position;
         let newPosition = new THREE.Vector3(duckPosition.x + xCamara, yCamara, duckPosition.z + zCamara);
         let nuevaX = duckPosition.x + xCamara;

@@ -1,15 +1,15 @@
-import {alturaSuelo, spawnPos, alturaJugador} from "./settings.js";
+import {alturaSuelo, spawnPos, alturaJugador, anchuraFila, primeraFila, tiempoMuerte} from "./settings.js";
 import {Bonificacion} from "./Bonificacion.js";
 
 export class DuckyDuck extends THREE.Object3D {
-
-    isMoving = false;
 
     constructor(scene) {
         super();
 
         this.scene = scene;
 
+        this.muerto = false;
+        this.isMoving = false;
         this.puntuacion = 0;
         this.multiplicidad = 1;
         this.fila_max = 0;
@@ -21,6 +21,7 @@ export class DuckyDuck extends THREE.Object3D {
     }
 
     onMove(type) {
+        if (this.muerto) return;
         if (this.isMoving) return; // Si ya se está moviendo, no comenzar otras animaciones
 
         let newPosition = new THREE.Vector3(this.position.x, (alturaSuelo + alturaJugador), this.position.z);
@@ -47,6 +48,15 @@ export class DuckyDuck extends THREE.Object3D {
             .easing(TWEEN.Easing.Quintic.InOut)
             .start();
 
+        if (newPosition.z <= -((anchuraFila / 2)) || newPosition.z > ((anchuraFila / 2))) {
+            this.morir();
+            return;
+        }
+        if (newPosition.x < (primeraFila - 1)) {
+            this.morir();
+            return;
+        }
+
         this.isMoving = false;
         this.finishMove(newPosition);
         this.ScoreResult(type, newPosition);
@@ -72,7 +82,7 @@ export class DuckyDuck extends THREE.Object3D {
         this.fila_max = 0; 
         this.puntuacion = 0;
         this.multiplicidad = 1;
-
+        this.finishMove(this.position);
     }
 
     ScoreResult(type, newPosition){
@@ -81,11 +91,35 @@ export class DuckyDuck extends THREE.Object3D {
                 this.fila_max = newPosition.x;
                 this.puntuacion = this.puntuacion + (1*this.multiplicidad);
             }
-        } 
+        }
+        this.updateText();
+    }
+
+    morir() {
+        document.getElementById("info-muerte").innerHTML = "¡Has muerto!";
+        this.muerto = true;
+        let that = this;
+        setTimeout(function () {
+                document.getElementById("info-muerte").innerHTML = "";
+                that.bonificacion = Bonificacion.NINGUNA;
+                that.puntuacion = 0;
+                that.resetPosition();
+                that.scene.game.tiempoJugado = 0;
+                that.isMoving = false;
+                that.muerto = false;
+                that.updateText();
+            }
+        , tiempoMuerte);
+    }
+
+    updateText() {
         document.getElementById("info-puntuacion").innerText = "Puntuacion: " + this.puntuacion;
         document.getElementById("info-multiplicidad").innerText = "Multiplicidad: {x" + this.multiplicidad + "}";
     }
 
+    /**
+     * Crear la geometria del pato
+     */
     createDuck (){
         let duck = new THREE.Object3D();
         duck.cabeza = new THREE.Mesh(
@@ -130,7 +164,15 @@ export class DuckyDuck extends THREE.Object3D {
         return duck;
     }
 
+    /**
+     * Comprobaciones de cada segundo
+     */
     tick() {
+        if (this.position.x < (this.scene.camera.position.x + 1)) { // Morir si le pilla la cámara
+            this.morir();
+            return;
+        }
+
         if (this.bonificacion.tiempo > 0) {
             this.bonificacion.tiempo--;
         }
