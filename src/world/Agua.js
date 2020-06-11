@@ -49,9 +49,17 @@ export default class Agua extends BiomaBase {
                         let posZ = Math.floor(Math.random() * anchuraFila) - Math.floor(anchuraFila / 2);
                         let posY = alturaSuelo;
                         let posX = i;
-                        let geometry = new THREE.CylinderGeometry( 0.7, 0.7, 0.9, 32 );
+                        
+                        let geometry = new THREE.CylinderGeometry( 0.7, 0.7, 0.9, 32);
+                        let hueco = new THREE.ConeGeometry( 1, 2, 5);
+                        hueco.rotateZ(THREE.Math.degToRad(90));
+                        let geoBSP = new ThreeBSP(geometry);
+                        let nenufarFinal = new geoBSP.subtract(new ThreeBSP(hueco));
                         let material = new THREE.MeshBasicMaterial( {color: 0x2c8708} );
-                        let nenufar = new THREE.Mesh( geometry, material );
+                        let nenufar = nenufarFinal.toMesh(material);
+                        nenufar.geometry.computeFaceNormals ();
+                        nenufar.geometry.computeVertexNormals ();
+
                         nenufar.position.set(i, alturaSuelo, posZ);
                         this.suelo.add(nenufar);
                         this.nenufares.push(nenufar);
