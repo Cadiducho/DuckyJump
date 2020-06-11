@@ -76,7 +76,7 @@ export class DuckyWorld extends THREE.Object3D {
         this.add(bioma); // Añade el objeto de biomas
 
         this.filasCreadas += bioma.getRows();
-        console.log("Añadiendo bioma nuevo en " + this.filasCreadas);
+        //console.log("Añadiendo bioma nuevo en " + this.filasCreadas);
     }
 
     update() {

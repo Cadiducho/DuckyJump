@@ -49,12 +49,18 @@ export class DuckyDuck extends THREE.Object3D {
             .start();
 
         if (newPosition.z <= -((anchuraFila / 2)) || newPosition.z > ((anchuraFila / 2))) {
-            this.morir();
+            this.morir(true);
             return;
         }
         if (newPosition.x < (primeraFila - 1)) {
-            this.morir();
+            this.morir(true);
             return;
+        }
+        if (this.scene.world.getFila(newPosition.x).type === 'agua') {
+            if (!this.scene.world.getFila(newPosition.x).instance.checkSafePlace(newPosition)) {
+                this.morir(true);
+                return;
+            }
         }
 
         this.isMoving = false;
@@ -95,9 +101,17 @@ export class DuckyDuck extends THREE.Object3D {
         this.updateText();
     }
 
-    morir() {
+    morir(caer) {
         document.getElementById("info-muerte").innerHTML = "¡Has muerto!";
         this.muerto = true;
+
+        // Si el pato muere cayendo a algún lado, mostrar animación
+        if (caer) {
+            new TWEEN.Tween(this.position)
+            .to({y: -1}, 600)
+            .easing(TWEEN.Easing.Quartic.In)
+            .start();
+        }
         let that = this;
         setTimeout(function () {
                 document.getElementById("info-muerte").innerHTML = "";
@@ -169,7 +183,7 @@ export class DuckyDuck extends THREE.Object3D {
      */
     tick() {
         if (this.position.x < (this.scene.camera.position.x + 1)) { // Morir si le pilla la cámara
-            this.morir();
+            this.morir(false);
             return;
         }
 
