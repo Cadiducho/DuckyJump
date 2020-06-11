@@ -15,7 +15,9 @@ export class DuckyDuck extends THREE.Object3D {
         this.fila_max = 0;
         this.bonificacion = Bonificacion.NINGUNA;
         this.t_velocidad = 400;
-        this.t_bonificacion = this.bonificacion.tiempo;
+
+        this.tronco = undefined;
+        this.diferenciaTronco = 0;
 
         this.duck = this.createDuck();
         this.resetPosition();
@@ -42,6 +44,7 @@ export class DuckyDuck extends THREE.Object3D {
                 newPosition.setZ(this.position.z + 1);
                 break;
         }
+        newPosition.floor(); // Redondear posiciones a enteros
 
         new TWEEN.Tween(this.position)
             .onStart(() => this.isMoving = true)
@@ -58,8 +61,13 @@ export class DuckyDuck extends THREE.Object3D {
             this.morir(true);
             return;
         }
+        // Al moverme, elimino posible anterior tronco que el jugador tenga guardado
+        if (this.tronco !== undefined) {
+            this.tronco = undefined;
+        }
+
         if (this.scene.world.getFila(newPosition.x).type === 'agua') {
-            if (!this.scene.world.getFila(newPosition.x).instance.checkSafePlace(newPosition)) {
+            if (!this.scene.world.getFila(newPosition.x).instance.checkSafePlace(this, newPosition)) {
                 this.morir(true);
                 return;
             }
@@ -90,9 +98,6 @@ export class DuckyDuck extends THREE.Object3D {
         this.fila_max = 0; 
         this.puntuacion = 0;
         this.multiplicidad = 1;
-        this.bonificacion = Bonificacion.GIGANTE;
-        this.t_bonificacion = this.bonificacion.tiempo;
-        this.bonificacion.aplicar(this);
         this.finishMove(this.position);
     }
 
@@ -110,12 +115,15 @@ export class DuckyDuck extends THREE.Object3D {
         document.getElementById("info-muerte").innerHTML = "¡Has muerto!";
         this.muerto = true;
 
+        this.tronco = undefined;
+        this.diferenciaTronco = 0;
+
         // Si el pato muere cayendo a algún lado, mostrar animación
         if (caer) {
             new TWEEN.Tween(this.position)
-            .to({y: -1}, 600)
-            .easing(TWEEN.Easing.Quartic.In)
-            .start();
+                .to({y: -1}, 600)
+                .easing(TWEEN.Easing.Quartic.In)
+                .start();
         }
         let that = this;
         setTimeout(function () {
@@ -192,8 +200,8 @@ export class DuckyDuck extends THREE.Object3D {
             return;
         }
         
-        if (this.t_bonificacion > 0) {
-            this.t_bonificacion--;
+        if (this.bonificacion.tiempo > 0) {
+            this.bonificacion.tiempo--;
         } else {
             this.bonificacion.quitar(this);
             this.bonificacion = Bonificacion.NINGUNA;
