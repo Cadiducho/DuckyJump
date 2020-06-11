@@ -14,10 +14,12 @@ export class DuckyDuck extends THREE.Object3D {
         this.multiplicidad = 1;
         this.fila_max = 0;
         this.bonificacion = Bonificacion.NINGUNA;
+        this.t_velocidad = 400;
+        this.t_bonificacion = this.bonificacion.tiempo;
 
-        let duck = this.createDuck();
+        this.duck = this.createDuck();
         this.resetPosition();
-        this.add(duck);
+        this.add(this.duck);
     }
 
     onMove(type) {
@@ -44,7 +46,7 @@ export class DuckyDuck extends THREE.Object3D {
         new TWEEN.Tween(this.position)
             .onStart(() => this.isMoving = true)
             .onComplete(() => this.isMoving = false)
-            .to(newPosition, 400)
+            .to(newPosition, this.t_velocidad)
             .easing(TWEEN.Easing.Quintic.InOut)
             .start();
 
@@ -88,6 +90,9 @@ export class DuckyDuck extends THREE.Object3D {
         this.fila_max = 0; 
         this.puntuacion = 0;
         this.multiplicidad = 1;
+        this.bonificacion = Bonificacion.GIGANTE;
+        this.t_bonificacion = this.bonificacion.tiempo;
+        this.bonificacion.aplicar(this);
         this.finishMove(this.position);
     }
 
@@ -128,7 +133,7 @@ export class DuckyDuck extends THREE.Object3D {
 
     updateText() {
         document.getElementById("info-puntuacion").innerText = "Puntuacion: " + this.puntuacion;
-        document.getElementById("info-multiplicidad").innerText = "Multiplicidad: {x" + this.multiplicidad + "}";
+        document.getElementById("info-bonificacion").innerText = "Bonificacion: {" + this.bonificacion.nombre + "}";
     }
 
     /**
@@ -186,12 +191,10 @@ export class DuckyDuck extends THREE.Object3D {
             this.morir(false);
             return;
         }
-
-        if (this.bonificacion.tiempo > 0) {
-            this.bonificacion.tiempo--;
-        }
-
-        if (this.bonificacion.tiempo < 0) {
+        
+        if (this.t_bonificacion > 0) {
+            this.t_bonificacion--;
+        } else {
             this.bonificacion.quitar(this);
             this.bonificacion = Bonificacion.NINGUNA;
         }
