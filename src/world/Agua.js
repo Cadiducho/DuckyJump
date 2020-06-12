@@ -140,7 +140,7 @@ export default class Agua extends BiomaBase {
         let that = this;
         this.troncos.forEach(function(tronco, index, object) {
             let position = tronco.object.position;
-            if (position.z <= -((anchuraFila / 2)) || position.z > ((anchuraFila / 2))) {
+            if (position.z <= -((anchuraFila / 2))) {
                 that.suelo.remove(tronco.object);
                 //tronco.object.dispose();
                 object.splice(index, 1); // Eliminar de la lista
@@ -153,6 +153,7 @@ export default class Agua extends BiomaBase {
             }
         });
 
+        // Ir actualizando la posición del jugador si está sobre un tronco
         if (jugador.tronco !== undefined) {
             jugador.position.z = (jugador.tronco.position.z - jugador.diferenciaTronco);
         }

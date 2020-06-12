@@ -118,12 +118,10 @@ export class DuckyDuck extends THREE.Object3D {
         // Si el pato muere cayendo a algún lado, mostrar animación
         switch (tipo) {
             case DeathType.CHOCAR:
-                console.log("Rot1: " + JSON.stringify(this.rotation));
                 new TWEEN.Tween(this.rotation)
-                    .to({ x: -Math.PI/2}, 1000)
+                    .to({ x: Math.PI/2}, 1000)
                     .easing(TWEEN.Easing.Quartic.In)
                     .start();
-                console.log("Rot2: " + JSON.stringify(this.rotation));
                 break;
             case DeathType.CAER:
                 new TWEEN.Tween(this.position)
