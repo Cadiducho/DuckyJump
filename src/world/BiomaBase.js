@@ -1,4 +1,5 @@
 import {alturaSuelo, anchuraFila, longitudFila} from "../settings.js";
+import {BiomeType} from "./BiomeType.js";
 
 export default class BiomaBase extends THREE.Object3D {
 
@@ -23,7 +24,7 @@ export default class BiomaBase extends THREE.Object3D {
      * @param inicio la fila
      * @param tipo Tipo del bioma. Puede ser cesped, agua...
      */
-    generarBioma(inicio, tipo = 'no definido') {
+    generarBioma(inicio, tipo = BiomeType.UNKNOWN) {
         //console.log("Inicio: " + inicio);
         this.inicio = inicio;
         let actualRow = inicio;
@@ -39,7 +40,8 @@ export default class BiomaBase extends THREE.Object3D {
 
             this.world.setFila(actualRow, {
                 type: tipo,
-                mesh: ground
+                mesh: ground,
+                instance: this
             });
 
             this.suelo.add(ground);

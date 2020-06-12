@@ -62,9 +62,9 @@ export class DuckyWorld extends THREE.Object3D {
         let bioma;
         if (r < 0.3) {
             bioma = new Bosque(this);
-        } else if (r < 0.5) {
+        } else if (r < 0.4) {
             bioma = new Cesped(this);
-        } else if (r < 0.8) {
+        } else if (r < 0.7) {
             bioma = new Agua(this);
             this.biomasAgua.push(bioma);
         } else {

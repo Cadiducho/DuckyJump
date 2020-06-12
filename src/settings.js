@@ -20,4 +20,4 @@ export const probabilidadArbolesFilaConArboles  = 0.6;
 export const probabilidadCantidadArbolesEnFila  = 0.2;
 export const tiempoMuerte = 2000;
 export const probabilidadCantidadNenufaresEnFila  = 0.2;
-export const probabilidadCantidadFloresEnFila = 0.6;
+export const probabilidadCantidadFloresEnFila  = 0.5;

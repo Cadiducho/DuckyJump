@@ -1,5 +1,8 @@
 import {alturaSuelo, spawnPos, alturaJugador, anchuraFila, primeraFila, tiempoMuerte} from "./settings.js";
 import {Bonificacion} from "./Bonificacion.js";
+import {MovementType} from "./MovementType.js"
+import {DeathType} from "./DeathType.js"
+import {BiomeType} from "./world/BiomeType.js";
 
 export class DuckyDuck extends THREE.Object3D {
 
@@ -32,33 +35,61 @@ export class DuckyDuck extends THREE.Object3D {
         //console.log("[Debug] Anterior: " + JSON.stringify(newPosition));
         switch (type) {
             case MovementType.ADELANTE:
+                new TWEEN.Tween(this.rotation)
+                    .to({ y: 0}, this.t_velocidad)
+                    .easing(TWEEN.Easing.Circular.Out)
+                    .start();
                 newPosition.setX(this.position.x + 1);
                 break;
             case MovementType.DETRAS:
+                new TWEEN.Tween(this.rotation)
+                    .to({ y: Math.PI}, this.t_velocidad)
+                    .easing(TWEEN.Easing.Circular.Out)
+                    .start();
                 newPosition.setX(this.position.x - 1);
                 break;
             case MovementType.IZQUIERDA:
+                new TWEEN.Tween(this.rotation)
+                    .to({ y: Math.PI/2}, this.t_velocidad)
+                    .easing(TWEEN.Easing.Circular.Out)
+                    .start();
                 newPosition.setZ(this.position.z - 1);
                 break;
             case MovementType.DERECHA:
+                new TWEEN.Tween(this.rotation)
+                    .to({y: -Math.PI/2}, this.t_velocidad)
+                    .easing(TWEEN.Easing.Circular.Out)
+                    .start();
                 newPosition.setZ(this.position.z + 1);
                 break;
         }
         newPosition.floor(); // Redondear posiciones a enteros
 
+        let salto = new TWEEN.Tween(this.position)
+            .onStart(() => this.isMoving = true)
+            .to({x: newPosition.x, y: newPosition.y + 0.3, z: newPosition.z}, this.t_velocidad / 1.5)
+            .easing(TWEEN.Easing.Quintic.Out)
+        let caida = new TWEEN.Tween(this.position)
+            .onComplete(() => this.isMoving = false)
+            .to(newPosition, this.t_velocidad / 3)
+            .easing(TWEEN.Easing.Quintic.In)
+        salto.chain(caida);
+        salto.start();
+
+        /**
         new TWEEN.Tween(this.position)
             .onStart(() => this.isMoving = true)
             .onComplete(() => this.isMoving = false)
             .to(newPosition, this.t_velocidad)
             .easing(TWEEN.Easing.Quintic.InOut)
-            .start();
+            .start();*/
 
         if (newPosition.z <= -((anchuraFila / 2)) || newPosition.z > ((anchuraFila / 2))) {
-            this.morir(true);
+            this.morir(DeathType.CAER);
             return;
         }
         if (newPosition.x < (primeraFila - 1)) {
-            this.morir(true);
+            this.morir(DeathType.CAER);
             return;
         }
         // Al moverme, elimino posible anterior tronco que el jugador tenga guardado
@@ -66,9 +97,10 @@ export class DuckyDuck extends THREE.Object3D {
             this.tronco = undefined;
         }
 
-        if (this.scene.world.getFila(newPosition.x).type === 'agua') {
+        let biomeType = this.scene.world.getFila(newPosition.x).type;
+        if (biomeType === BiomeType.AGUA || biomeType === BiomeType.BOSQUE) {
             if (!this.scene.world.getFila(newPosition.x).instance.checkSafePlace(this, newPosition)) {
-                this.morir(true);
+                this.morir(biomeType === BiomeType.BOSQUE ? DeathType.CHOCAR : DeathType.CAER);
                 return;
             }
         }
@@ -76,24 +108,18 @@ export class DuckyDuck extends THREE.Object3D {
         this.isMoving = false;
         this.finishMove(newPosition);
         this.ScoreResult(type, newPosition);
-        //this.position.copy(newPosition);
         //console.log("[Debug] Moviendo a " + JSON.stringify(newPosition));
     }
 
     finishMove(newPosition) {
         document.getElementById("info-bioma").innerText = "Bioma: " + this.scene.world.getFila(newPosition.x).type;
         document.getElementById("info-posicion").innerText = "Posicion: {x: " + newPosition.x + ", z: " + newPosition.z +"}";
-/*
-        if (colision) {
-            switch () {
-                this.bonificacion = Bonificacion.VELOCIDAD;
-            }
-            this.bonificacion.aplicar(this);
-        }*/
     }
 
     resetPosition() {
         this.position.set(spawnPos.x, spawnPos.y, spawnPos.z);
+        this.rotation.set(0, 0, 0);
+        this.scale.set(1, 1, 1);
         this.isMoving = false;
         this.fila_max = 0; 
         this.puntuacion = 0;
@@ -111,19 +137,33 @@ export class DuckyDuck extends THREE.Object3D {
         this.updateText();
     }
 
-    morir(caer) {
-        document.getElementById("info-muerte").innerHTML = "¡Has muerto!";
+    morir(tipo) {
+        document.getElementById("info-muerte").innerHTML = "¡Has perdido!";
         this.muerto = true;
 
         this.tronco = undefined;
         this.diferenciaTronco = 0;
 
         // Si el pato muere cayendo a algún lado, mostrar animación
-        if (caer) {
-            new TWEEN.Tween(this.position)
-                .to({y: -1}, 600)
-                .easing(TWEEN.Easing.Quartic.In)
-                .start();
+        switch (tipo) {
+            case DeathType.CHOCAR:
+                new TWEEN.Tween(this.rotation)
+                    .to({ x: Math.PI/2}, 500)
+                    .easing(TWEEN.Easing.Quartic.In)
+                    .start();
+                break;
+            case DeathType.CAER:
+                new TWEEN.Tween(this.position)
+                    .to({y: -1}, 600)
+                    .easing(TWEEN.Easing.Quartic.In)
+                    .start();
+                break;
+            case DeathType.APLASTAR:
+                new TWEEN.Tween(this.scale)
+                    .to({x: 1.2, y: 0.1, z: 1.8}, 300)
+                    .easing(TWEEN.Easing.Quartic.In)
+                    .start();
+                break;
         }
         let that = this;
         setTimeout(function () {
@@ -196,7 +236,7 @@ export class DuckyDuck extends THREE.Object3D {
      */
     tick() {
         if (this.position.x < (this.scene.camera.position.x + 1)) { // Morir si le pilla la cámara
-            this.morir(false);
+            this.morir(DeathType.NINGUNA);
             return;
         }
         
@@ -207,11 +247,4 @@ export class DuckyDuck extends THREE.Object3D {
             this.bonificacion = Bonificacion.NINGUNA;
         }
     }
-}
-
-export const MovementType = {
-    ADELANTE: 1,
-    DETRAS: 2,
-    IZQUIERDA: 3,
-    DERECHA: 4,
 }
