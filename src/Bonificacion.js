@@ -20,15 +20,6 @@ export const Bonificacion = {
             jugador.t_velocidad = 400;
         }
     },
-    VIDA: {
-        tiempo: 20,
-        nombre: "Vida Extra",
-        aplicar: (jugador) => {
-        },
-        quitar: (jugador) => {
-
-        }
-    },
     MULTIPLICADOR: {
         tiempo: 5,
         nombre: "Multiplicador de Puntos",

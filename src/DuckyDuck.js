@@ -105,6 +105,9 @@ export class DuckyDuck extends THREE.Object3D {
             }
         }
 
+        let biomeInstance = this.scene.world.getFila(newPosition.x).instance;
+        biomeInstance.checkCarameloEncontrado(this, newPosition);
+
         this.isMoving = false;
         this.finishMove(newPosition);
         this.ScoreResult(type, newPosition);
@@ -143,6 +146,7 @@ export class DuckyDuck extends THREE.Object3D {
 
         this.tronco = undefined;
         this.diferenciaTronco = 0;
+        this.bonificacion.quitar(this);
 
         // Si el pato muere cayendo a algún lado, mostrar animación
         switch (tipo) {

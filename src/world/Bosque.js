@@ -1,5 +1,6 @@
 import BiomaBase from "./BiomaBase.js";
 import {BiomeType} from "./BiomeType.js";
+import {Bonificacion} from "../Bonificacion.js";
 import {alturaSuelo, anchuraFila, probabilidadArbolesFilaConArboles, probabilidadCantidadArbolesEnFila} from "../settings.js";
 
 export default class Bosque extends BiomaBase {
@@ -46,6 +47,8 @@ export default class Bosque extends BiomaBase {
                         this.arboles.push(tronco);
                     }
                 }
+            } else {
+                this.insertarCaramelos(i);
             }
         }
     }
@@ -56,6 +59,9 @@ export default class Bosque extends BiomaBase {
      * @returns {boolean} Falso si el jugador debe morir
      */
     checkSafePlace(jugador, position) {
+        if(jugador.bonificacion.nombre === Bonificacion.GIGANTE.nombre){
+            return true; //Si es gigante atraviesa arboles.
+        }
         return !this.arboles.some((arbol) => arbol.position.x === position.x && arbol.position.z === position.z);
     }
 }

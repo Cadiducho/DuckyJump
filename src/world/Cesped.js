@@ -67,6 +67,8 @@ export default class Cesped extends BiomaBase {
                         //console.log("Generando arbol en x:", posX, " y:", posY, " z:", posZ);
                     }
                 }
+            } else {
+                this.insertarCaramelos(i);
             }
         }
     }
