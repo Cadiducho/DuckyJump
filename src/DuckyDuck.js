@@ -35,26 +35,54 @@ export class DuckyDuck extends THREE.Object3D {
         //console.log("[Debug] Anterior: " + JSON.stringify(newPosition));
         switch (type) {
             case MovementType.ADELANTE:
+                new TWEEN.Tween(this.rotation)
+                    .to({ y: 0}, this.t_velocidad)
+                    .easing(TWEEN.Easing.Circular.Out)
+                    .start();
                 newPosition.setX(this.position.x + 1);
                 break;
             case MovementType.DETRAS:
+                new TWEEN.Tween(this.rotation)
+                    .to({ y: Math.PI}, this.t_velocidad)
+                    .easing(TWEEN.Easing.Circular.Out)
+                    .start();
                 newPosition.setX(this.position.x - 1);
                 break;
             case MovementType.IZQUIERDA:
+                new TWEEN.Tween(this.rotation)
+                    .to({ y: Math.PI/2}, this.t_velocidad)
+                    .easing(TWEEN.Easing.Circular.Out)
+                    .start();
                 newPosition.setZ(this.position.z - 1);
                 break;
             case MovementType.DERECHA:
+                new TWEEN.Tween(this.rotation)
+                    .to({y: -Math.PI/2}, this.t_velocidad)
+                    .easing(TWEEN.Easing.Circular.Out)
+                    .start();
                 newPosition.setZ(this.position.z + 1);
                 break;
         }
         newPosition.floor(); // Redondear posiciones a enteros
 
+        let salto = new TWEEN.Tween(this.position)
+            .onStart(() => this.isMoving = true)
+            .to({x: newPosition.x, y: newPosition.y + 0.3, z: newPosition.z}, this.t_velocidad / 1.5)
+            .easing(TWEEN.Easing.Quintic.Out)
+        let caida = new TWEEN.Tween(this.position)
+            .onComplete(() => this.isMoving = false)
+            .to(newPosition, this.t_velocidad / 3)
+            .easing(TWEEN.Easing.Quintic.In)
+        salto.chain(caida);
+        salto.start();
+
+        /**
         new TWEEN.Tween(this.position)
             .onStart(() => this.isMoving = true)
             .onComplete(() => this.isMoving = false)
             .to(newPosition, this.t_velocidad)
             .easing(TWEEN.Easing.Quintic.InOut)
-            .start();
+            .start();*/
 
         if (newPosition.z <= -((anchuraFila / 2)) || newPosition.z > ((anchuraFila / 2))) {
             this.morir(DeathType.CAER);
@@ -91,6 +119,7 @@ export class DuckyDuck extends THREE.Object3D {
     resetPosition() {
         this.position.set(spawnPos.x, spawnPos.y, spawnPos.z);
         this.rotation.set(0, 0, 0);
+        this.scale.set(1, 1, 1);
         this.isMoving = false;
         this.fila_max = 0; 
         this.puntuacion = 0;
@@ -119,13 +148,19 @@ export class DuckyDuck extends THREE.Object3D {
         switch (tipo) {
             case DeathType.CHOCAR:
                 new TWEEN.Tween(this.rotation)
-                    .to({ x: Math.PI/2}, 1000)
+                    .to({ x: Math.PI/2}, 500)
                     .easing(TWEEN.Easing.Quartic.In)
                     .start();
                 break;
             case DeathType.CAER:
                 new TWEEN.Tween(this.position)
                     .to({y: -1}, 600)
+                    .easing(TWEEN.Easing.Quartic.In)
+                    .start();
+                break;
+            case DeathType.APLASTAR:
+                new TWEEN.Tween(this.scale)
+                    .to({x: 1.2, y: 0.1, z: 1.8}, 300)
                     .easing(TWEEN.Easing.Quartic.In)
                     .start();
                 break;

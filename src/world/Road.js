@@ -75,7 +75,7 @@ export default class Road extends BiomaBase {
                 if (jugador.position.x === carPosition.x) {
                     if ((carPosition.z - (that.longitudCoche / 2)) < jugador.position.z
                         && (carPosition.z + (that.longitudCoche / 2)) > jugador.position.z) {
-                        jugador.morir(DeathType.CHOCAR);
+                        jugador.morir(DeathType.APLASTAR);
                     }
                 }
             }
