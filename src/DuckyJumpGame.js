@@ -1,6 +1,6 @@
 import {DuckyScene} from "./DuckyScene.js";
 import {DuckyDuck} from "./DuckyDuck.js";
-import {MovementType} from "./DuckyDuck.js";
+import {MovementType} from "./MovementType.js";
 
 /**
  * Clase principal del juego que creará la escena a renderizar y se enlazará al html

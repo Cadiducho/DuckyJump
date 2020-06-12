@@ -1,4 +1,5 @@
 import BiomaBase from "./BiomaBase.js";
+import {BiomeType} from "./BiomeType.js";
 
 export default class Road extends BiomaBase {
 
@@ -10,7 +11,7 @@ export default class Road extends BiomaBase {
 
     generarBioma(inicio) {
         //console.log("Generando road con " + this.rows);
-        super.generarBioma(inicio, 'road');
+        super.generarBioma(inicio, BiomeType.ROAD);
     }
 
     update(player) {

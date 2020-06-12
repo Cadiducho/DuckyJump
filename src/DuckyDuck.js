@@ -1,5 +1,7 @@
 import {alturaSuelo, spawnPos, alturaJugador, anchuraFila, primeraFila, tiempoMuerte} from "./settings.js";
 import {Bonificacion} from "./Bonificacion.js";
+import {MovementType} from "./MovementType.js"
+import {BiomeType} from "./world/BiomeType.js";
 
 export class DuckyDuck extends THREE.Object3D {
 
@@ -66,7 +68,7 @@ export class DuckyDuck extends THREE.Object3D {
             this.tronco = undefined;
         }
 
-        if (this.scene.world.getFila(newPosition.x).type === 'agua') {
+        if (this.scene.world.getFila(newPosition.x).type === BiomeType.AGUA) {
             if (!this.scene.world.getFila(newPosition.x).instance.checkSafePlace(this, newPosition)) {
                 this.morir(true);
                 return;
@@ -76,20 +78,12 @@ export class DuckyDuck extends THREE.Object3D {
         this.isMoving = false;
         this.finishMove(newPosition);
         this.ScoreResult(type, newPosition);
-        //this.position.copy(newPosition);
         //console.log("[Debug] Moviendo a " + JSON.stringify(newPosition));
     }
 
     finishMove(newPosition) {
         document.getElementById("info-bioma").innerText = "Bioma: " + this.scene.world.getFila(newPosition.x).type;
         document.getElementById("info-posicion").innerText = "Posicion: {x: " + newPosition.x + ", z: " + newPosition.z +"}";
-/*
-        if (colision) {
-            switch () {
-                this.bonificacion = Bonificacion.VELOCIDAD;
-            }
-            this.bonificacion.aplicar(this);
-        }*/
     }
 
     resetPosition() {
@@ -112,7 +106,7 @@ export class DuckyDuck extends THREE.Object3D {
     }
 
     morir(caer) {
-        document.getElementById("info-muerte").innerHTML = "¡Has muerto!";
+        document.getElementById("info-muerte").innerHTML = "¡Has perdido!";
         this.muerto = true;
 
         this.tronco = undefined;
@@ -207,11 +201,4 @@ export class DuckyDuck extends THREE.Object3D {
             this.bonificacion = Bonificacion.NINGUNA;
         }
     }
-}
-
-export const MovementType = {
-    ADELANTE: 1,
-    DETRAS: 2,
-    IZQUIERDA: 3,
-    DERECHA: 4,
 }

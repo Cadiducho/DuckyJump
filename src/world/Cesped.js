@@ -1,17 +1,19 @@
 import BiomaBase from "./BiomaBase.js";
+import {BiomeType} from "./BiomeType.js";
 import {alturaSuelo, anchuraFila, probabilidadCantidadFloresEnFila} from "../settings.js";
+
 export default class Cesped extends BiomaBase {
 
     color = 0x62fc68;
 
     constructor(world) {
-        super(1, 4, world);
+        super(1, 3, world);
         this.flores = [];
     }
 
     generarBioma(inicio) {
         //console.log("Generando cesped con " + this.rows);
-        super.generarBioma(inicio, 'cesped');
+        super.generarBioma(inicio, BiomeType.CESPED);
         this.crearFlores();
     }
 

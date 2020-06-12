@@ -1,4 +1,5 @@
 import BiomaBase from "./BiomaBase.js";
+import {BiomeType} from "./BiomeType.js";
 import {alturaSuelo, anchuraFila, probabilidadArbolesFilaConArboles, probabilidadCantidadArbolesEnFila} from "../settings.js";
 
 export default class Bosque extends BiomaBase {
@@ -11,7 +12,7 @@ export default class Bosque extends BiomaBase {
 
     generarBioma(inicio) {
         //console.log("Generando bosque con " + this.rows);
-        super.generarBioma(inicio, 'bosque');
+        super.generarBioma(inicio, BiomeType.BOSQUE);
         this.crearArboles();
     }
 
