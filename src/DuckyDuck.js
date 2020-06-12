@@ -1,6 +1,7 @@
 import {alturaSuelo, spawnPos, alturaJugador, anchuraFila, primeraFila, tiempoMuerte} from "./settings.js";
 import {Bonificacion} from "./Bonificacion.js";
 import {MovementType} from "./MovementType.js"
+import {DeathType} from "./DeathType.js"
 import {BiomeType} from "./world/BiomeType.js";
 
 export class DuckyDuck extends THREE.Object3D {
@@ -56,11 +57,11 @@ export class DuckyDuck extends THREE.Object3D {
             .start();
 
         if (newPosition.z <= -((anchuraFila / 2)) || newPosition.z > ((anchuraFila / 2))) {
-            this.morir(true);
+            this.morir(DeathType.CAER);
             return;
         }
         if (newPosition.x < (primeraFila - 1)) {
-            this.morir(true);
+            this.morir(DeathType.CAER);
             return;
         }
         // Al moverme, elimino posible anterior tronco que el jugador tenga guardado
@@ -68,9 +69,10 @@ export class DuckyDuck extends THREE.Object3D {
             this.tronco = undefined;
         }
 
-        if (this.scene.world.getFila(newPosition.x).type === BiomeType.AGUA) {
+        let biomeType = this.scene.world.getFila(newPosition.x).type;
+        if (biomeType === BiomeType.AGUA || biomeType === BiomeType.BOSQUE) {
             if (!this.scene.world.getFila(newPosition.x).instance.checkSafePlace(this, newPosition)) {
-                this.morir(true);
+                this.morir(biomeType === BiomeType.BOSQUE ? DeathType.CHOCAR : DeathType.CAER);
                 return;
             }
         }
@@ -88,6 +90,7 @@ export class DuckyDuck extends THREE.Object3D {
 
     resetPosition() {
         this.position.set(spawnPos.x, spawnPos.y, spawnPos.z);
+        this.rotation.set(0, 0, 0);
         this.isMoving = false;
         this.fila_max = 0; 
         this.puntuacion = 0;
@@ -105,7 +108,7 @@ export class DuckyDuck extends THREE.Object3D {
         this.updateText();
     }
 
-    morir(caer) {
+    morir(tipo) {
         document.getElementById("info-muerte").innerHTML = "¡Has perdido!";
         this.muerto = true;
 
@@ -113,11 +116,21 @@ export class DuckyDuck extends THREE.Object3D {
         this.diferenciaTronco = 0;
 
         // Si el pato muere cayendo a algún lado, mostrar animación
-        if (caer) {
-            new TWEEN.Tween(this.position)
-                .to({y: -1}, 600)
-                .easing(TWEEN.Easing.Quartic.In)
-                .start();
+        switch (tipo) {
+            case DeathType.CHOCAR:
+                console.log("Rot1: " + JSON.stringify(this.rotation));
+                new TWEEN.Tween(this.rotation)
+                    .to({ x: -Math.PI/2}, 1000)
+                    .easing(TWEEN.Easing.Quartic.In)
+                    .start();
+                console.log("Rot2: " + JSON.stringify(this.rotation));
+                break;
+            case DeathType.CAER:
+                new TWEEN.Tween(this.position)
+                    .to({y: -1}, 600)
+                    .easing(TWEEN.Easing.Quartic.In)
+                    .start();
+                break;
         }
         let that = this;
         setTimeout(function () {
@@ -190,7 +203,7 @@ export class DuckyDuck extends THREE.Object3D {
      */
     tick() {
         if (this.position.x < (this.scene.camera.position.x + 1)) { // Morir si le pilla la cámara
-            this.morir(false);
+            this.morir(DeathType.NINGUNA);
             return;
         }
         

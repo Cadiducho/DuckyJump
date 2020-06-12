@@ -8,6 +8,8 @@ export default class Bosque extends BiomaBase {
 
     constructor(world) {
         super(1, 4, world);
+
+        this.arboles = [];
     }
 
     generarBioma(inicio) {
@@ -33,17 +35,27 @@ export default class Bosque extends BiomaBase {
                         let materialHoja = new THREE.MeshBasicMaterial( {color: 0x2b6e2b} );
                         let tronco = new THREE.Mesh(geometryTronco, materialTronco);
 
-                        tronco.position.set(i, alturaSuelo + 1, posZ);
+                        tronco.position.set(posX, posY, posZ);
                         tronco.scale.set(0.8, 2.8, 0.8);
                         let hojas = new THREE.Mesh(geometryHoja, materialHoja );
-                        hojas.position.set(i, alturaSuelo + 3, posZ);
+                        hojas.position.set(posX, posY + 2, posZ);
 
                         arbol.add(tronco);
                         arbol.add(hojas);
                         this.suelo.add(arbol);
+                        this.arboles.push(tronco);
                     }
                 }
             }
         }
+    }
+
+    /**
+     * Comprobar si el lugar donde va a saltar tiene un arbol
+     * @param position La posición a comprobar
+     * @returns {boolean} Falso si el jugador debe morir
+     */
+    checkSafePlace(jugador, position) {
+        return !this.arboles.some((arbol) => arbol.position.x === position.x && arbol.position.z === position.z);
     }
 }

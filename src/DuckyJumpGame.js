@@ -1,6 +1,7 @@
 import {DuckyScene} from "./DuckyScene.js";
 import {DuckyDuck} from "./DuckyDuck.js";
 import {MovementType} from "./MovementType.js";
+import {DeathType} from "./DeathType.js";
 
 /**
  * Clase principal del juego que creará la escena a renderizar y se enlazará al html
@@ -70,7 +71,7 @@ function onDocumentKeyDown(event) {
     } else if (keyCode === 68 || keyCode === 39) { // A o ->
         game.player.onMove(MovementType.DERECHA);
     } else if (keyCode === 32) { // Espacio
-        game.player.morir();
+        game.player.morir(DeathType.CHOCAR);
     }
 }
 

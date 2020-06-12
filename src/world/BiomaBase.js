@@ -40,7 +40,8 @@ export default class BiomaBase extends THREE.Object3D {
 
             this.world.setFila(actualRow, {
                 type: tipo,
-                mesh: ground
+                mesh: ground,
+                instance: this
             });
 
             this.suelo.add(ground);
